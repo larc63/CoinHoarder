@@ -1,19 +1,23 @@
-/*global ko, data, Coin */
+/*global ko, data, Coin, CoinType, localStorage */
+/** @const **/
 var CURRENT_GOLD_SPOT = 1233.33;
+/** @const **/
 var CURRENT_SILVER_SPOT = 15.46;
+/** @const **/
 var CURRENT_PLATINUM_SPOT = 945.50;
+/** @const **/
 var CURRENT_COPPER_SPOT = 2.06;
 
-function pad(num, size) {
-    return ('000000000' + num).substr(-size);
-}
+//function pad(num, size) {
+//    return ('000000000' + num).substr(-size);
+//}
 
 function format4(value) {
     "use strict";
     if (value instanceof String || typeof value === "string") {
         value = Number(value);
     }
-//    console.log(typeof value + " !!! " + value);
+    //    console.log(typeof value + " !!! " + value);
     return value.toFixed(4);
 }
 
@@ -30,7 +34,7 @@ function CoinSet() {
     "use strict";
     this.name = "";
     this.coins = ko.observableArray([]);
-};
+}
 
 function ViewModel() {
     "use strict";
@@ -40,7 +44,7 @@ function ViewModel() {
     this.sellableCoins = ko.observableArray([]);
     this.getCoinType = function (data) {
         var i, type = this.coinTypes().find(function (e) {
-            return e.id() === data.coinTypeId
+            return e.id() === data.coinTypeId;
         });
         if (type) {
             return type;
@@ -52,9 +56,9 @@ function ViewModel() {
                 return type;
             }
         }
-        if (data.coinTypeId === undefined) {
-            debugger;
-        }
+        //if (data.coinTypeId === undefined) {
+        //    debugger;
+        //}
         console.log("adding a new type for " + data.coinTypeId);
         type = new CoinType(data.coinType);
         this.coinTypes.push(type);
@@ -66,8 +70,7 @@ function ViewModel() {
             return e.year() === year && e.country() === country && e.series() === series && e.metal() === metal && e.weight() === weight;
         });
         return type;
-    }
-
+    };
 
     this.sortCoins = function () {
         this.coinTypes().sort(function (a, b) {
@@ -125,7 +128,7 @@ function ViewModel() {
             if (w1 > w2) return 1;
             return 0;
         });
-    }
+    };
 
     for (i = 0; i < data.coinTypes.length; i += 1) {
         this.coinTypes().push(new CoinType(data.coinTypes[i]));
@@ -164,14 +167,14 @@ function ViewModel() {
     this.stagedIndex = 0;
     this.stagedCoinType = ko.observable();
     this.stagedCoinTypeIndex = 0;
-    this.copyCoinType = function (index) {
+    this.copyCoinType = function () {
         self.stagedCoinType(this.clone());
         self.stagedCoinTypeIndex = -1;
-    }
+    };
     this.deleteCoinType = function (index) {
         self.coinTypes.splice(index, 1);
         self.coinTypes.valueHasMutated();
-    }
+    };
     this.editCoinType = function (index) {
         self.stagedCoinType(this.clone());
         self.stagedCoinType().id(this.id());
@@ -241,21 +244,21 @@ function ViewModel() {
     };
     this.stagedCoin = ko.observable();
 
-    this.copyMyCoin = function (index) {
+    this.copyMyCoin = function () {
         self.stagedCoin(this.clone());
         self.stagedIndex = -1;
-    }
+    };
 
     this.editMyCoin = function (index) {
         self.stagedCoin(this.clone());
         self.stagedCoin().id(this.id());
         self.stagedIndex = index;
-    }
+    };
 
     this.deleteMyCoin = function (index) {
         self.coins().splice(index, 1);
         self.coins.valueHasMutated();
-    }
+    };
 
     this.commitCoin = function () {
         if (self.stagedCoin().coinType().id() !== this.coinTypeId) {
@@ -270,14 +273,14 @@ function ViewModel() {
         self.stagedIndex = 0;
         self.sortCoins();
         self.coins.valueHasMutated();
-    }
+    };
     this.addCoin = function () {
         self.stagedCoin();
-    }
+    };
     this.cancelCoinOperation = function () {
         self.stagedCoin(undefined);
         self.stagedCoinType(undefined);
-    }
+    };
 
 
     this.numberOfCoins = ko.computed(function () {
@@ -295,12 +298,12 @@ function ViewModel() {
             return e.active() && !e.isPermaStack();
         }).length + " Coins not in permastack";
     });
-    var getNumberOfOunces = function (metal){
+    var getNumberOfOunces = function (metal) {
         var retVal = 0,
             activeCoins = self.coins().filter(function (e) {
-                if(metal){
-                return e.active() && e.coinType().metal() == metal;
-                }else{
+                if (metal) {
+                    return e.active() && e.coinType().metal() == metal;
+                } else {
                     return e.active();
                 }
             });
@@ -311,8 +314,8 @@ function ViewModel() {
                 } else {
                     return a + Number(b.coinType().weight());
                 }
-            }));
-        } else if (activeCoins.length == 1){
+            }, 0));
+        } else if (activeCoins.length == 1) {
             retVal = activeCoins[0].coinType().weight();
         }
         return retVal + " Ounces";
@@ -350,14 +353,14 @@ function ViewModel() {
                 }
             };
 
-        if (activeSilverCoins.length > 0) {
-            goldTotal = activeGoldCoins.reduce(adder);
-            silverTotal = activeSilverCoins.reduce(adder);
+//        if (activeSilverCoins.length > 0 && activeGoldCoins.length > 0) {
+            goldTotal = activeGoldCoins.reduce(adder, Infinity);
+            silverTotal = activeSilverCoins.reduce(adder, 0);
             ratio = 1 / goldTotal;
             return "Silver:gold = " + format4(silverTotal * ratio) + ":1";
-        } else {
-            return "0:0";
-        }
+//        } else {
+//            return "0:0";
+//        }
     });
     this.numberOfOuncesInPermaStack = ko.computed(function () {
         var retVal = 0,
@@ -422,7 +425,7 @@ function ViewModel() {
             } else {
                 return a + Number(b.currentPrice());
             }
-        }));
+        }, 0));
     });
     this.possibleSale = ko.computed(function () {
         return formatCurrency(self.coins().filter(function (e) {
@@ -486,6 +489,6 @@ function ViewModel() {
         name: 'Summary',
         text: 'This is where the summary goes'
     }));
-};
+}
 var vm = new ViewModel();
 ko.applyBindings(vm);
