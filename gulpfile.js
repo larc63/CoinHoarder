@@ -8,19 +8,25 @@ var es = require('event-stream');
 
 let paths = {
     pages: ['pages/*.html'],
-    images: ['images/*.png'],  
+    images: ['images/*.png'],
     styles: ['css/*.css'],
     libs: ['js/knockout-3.3.0.js'],
     data: ['data/coindata.js']
 };
 
-let watchedBrowserify = watchify(browserify({
-    basedir: '.',
-    debug: true,
-    entries: ['ts/CoinHoarder.ts'],
-    cache: {},
-    packageCache: {}
-}).plugin(tsify));
+
+function bundle() {
+    return browserify({
+            basedir: '.',
+            debug: true,
+            entries: ['ts/CoinHoarder.ts'],
+            cache: {},
+            packageCache: {}
+        }).plugin(tsify)
+        .bundle()
+        .pipe(source('bundle.js'))
+        .pipe(gulp.dest("dist/js"));
+}
 
 gulp.task("copy-html", function () {
     let pages = gulp.src(paths.pages)
@@ -28,21 +34,22 @@ gulp.task("copy-html", function () {
     let images = gulp.src(paths.images)
         .pipe(gulp.dest("dist/images"));
     let styles = gulp.src(paths.styles)
-    .pipe(gulp.dest("dist/css"));
+        .pipe(gulp.dest("dist/css"));
     let libs = gulp.src(paths.libs)
-    .pipe(gulp.dest("dist/lib"));
+        .pipe(gulp.dest("dist/lib"));
     let data = gulp.src(paths.data)
-    .pipe(gulp.dest("dist/js"));
+        .pipe(gulp.dest("dist/js"));
     es.concat([pages, styles, libs, data, images]);
 });
 
-function bundle() {
-    return watchedBrowserify
-        .bundle()
-        .pipe(source('bundle.js'))
-        .pipe(gulp.dest("dist/js"));
-}
+gulp.task('watch', ['bundle'], function (cb) {
+    var watcher = gulp.watch([paths.pages, paths.images, paths.styles, paths.libs, paths.data], ['refresh']);
+    watcher.on('change', function (event) {
+        console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
+    });
+    cb();
+});
 
-gulp.task("default", ["copy-html"], bundle);
-watchedBrowserify.on("update", bundle);
-watchedBrowserify.on("log", gutil.log);
+gulp.task("bundle", ["copy-html"], bundle);
+
+gulp.task("default", ["copy-html", "bundle"]);
