@@ -42,8 +42,10 @@ gulp.task("copy-html", function () {
     es.concat([pages, styles, libs, data, images]);
 });
 
-gulp.task('watch', ['bundle'], function (cb) {
-    var watcher = gulp.watch([paths.pages, paths.images, paths.styles, paths.libs, paths.data], ['refresh']);
+gulp.task('watch', ["copy-html", "bundle"], function (cb) {
+    // For now, this rebuilds everything when any of the watched files changes; could definitely be separated when 
+    // the project grows
+    var watcher = gulp.watch(["ts/**", paths.pages, paths.images, paths.styles, paths.libs, paths.data], ['bundle']);
     watcher.on('change', function (event) {
         console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
     });
