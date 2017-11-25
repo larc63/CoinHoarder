@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Coin Hoarder</title>
-    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -88,12 +88,12 @@
                         <td data-bind="text: coinType().mint">--</td>
                         <td data-bind="text: coinType().series">--</td>
                         <td data-bind="text: coinType().metal">--</td>
-                        <td data-bind="text: format4(coinType().weight())" class="numericalvalue">--</td>
+                        <td data-bind="text: $parent.format4(coinType().weight())" class="numericalvalue">--</td>
                         <td data-bind="text: coinType().diameter" class="numericalvalue">--</td>
                         <td data-bind="text: coinType().width" class="numericalvalue">--</td>
-                        <td data-bind="text: formatCurrency(purchasePrice()), css: {numericalvalue: true}">--</td>
-                        <td data-bind="text: formatCurrency(meltPrice())" class="numericalvalue">--</td>
-                        <td data-bind="text: formatCurrency(currentPrice())" class="numericalvalue">--</td>
+                        <td data-bind="text: $parent.formatCurrency(purchasePrice()), css: {numericalvalue: true}">--</td>
+                        <td data-bind="text: $parent.formatCurrency(meltPrice())" class="numericalvalue">--</td>
+                        <td data-bind="text: $parent.formatCurrency(currentPrice())" class="numericalvalue">--</td>
                     </tr>
                 </tbody>
             </table>
@@ -236,12 +236,12 @@
                         <td data-bind="text: coinType().mint">--</td>
                         <td data-bind="text: coinType().series">--</td>
                         <td data-bind="text: coinType().metal">--</td>
-                        <td data-bind="text: format4(coinType().weight())" class="numericalvalue">--</td>
+                        <td data-bind="text: $parent.format4(coinType().weight())" class="numericalvalue">--</td>
                         <td data-bind="text: coinType().diameter" class="numericalvalue">--</td>
                         <td data-bind="text: coinType().width" class="numericalvalue">--</td>
-                        <td data-bind="text: formatCurrency(purchasePrice()), css: {numericalvalue: true}">--</td>
-                        <td data-bind="text: formatCurrency(meltPrice())" class="numericalvalue">--</td>
-                        <td data-bind="text: formatCurrency(currentPrice())" class="numericalvalue">--</td>
+                        <td data-bind="text: $parent.formatCurrency(purchasePrice()), css: {numericalvalue: true}">--</td>
+                        <td data-bind="text: $parent.formatCurrency(meltPrice())" class="numericalvalue">--</td>
+                        <td data-bind="text: $parent.formatCurrency(currentPrice())" class="numericalvalue">--</td>
                     </tr>
                 </tbody>
             </table>
@@ -279,11 +279,9 @@
     </div>
 
 
-    <script src="js/knockout-3.3.0.js"></script>
-    <script src="js/coin.js"></script>
-    <script src="js/cointype.js"></script>
-    <script src="js/data.js"></script>
-    <script src="js/index.js"></script>
+    <script src="lib/knockout-3.3.0.js"></script>
+    <script src="js/coindata.js"></script>
+    <script src="js/bundle.js"></script>
 </body>
 
 </html>

@@ -1,4 +1,4 @@
-window.data = {
+var coinData = {
     "coins": [{
         "id": "mc52480842",
         "coinTypeId": "ct30726160",

@@ -18,5 +18,20 @@
   "bugs": {
     "url": "https://github.com/larc63/CoinHoarder/issues"
   },
-  "homepage": "https://github.com/larc63/CoinHoarder#readme"
+  "homepage": "https://github.com/larc63/CoinHoarder#readme",
+  "devDependencies": {
+    "browserify": "^14.5.0",
+    "event-stream": "^3.3.4",
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^3.2.3",
+    "gulp-util": "^3.0.8",
+    "tsify": "^3.0.3",
+    "typescript": "^2.6.1",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.9.0"
+  },
+  "dependencies": {
+    "@types/angular": "^1.6.39",
+    "@types/knockout": "^3.4.47"
+  }
 }
