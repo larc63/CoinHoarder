@@ -43,10 +43,10 @@ gulp.task("copy-html", function () {
     es.concat([pages, styles, libs, data, images]);
 });
 
-gulp.task('watch', ["copy-html", "bundle"], function (cb) {
+gulp.task('watch', ["copy-html", "bundle", "test"], function (cb) {
     // For now, this rebuilds everything when any of the watched files changes; could definitely be separated when 
     // the project grows
-    var watcher = gulp.watch(["ts/**", paths.pages, paths.images, paths.styles, paths.libs, paths.data], ['bundle']);
+    var watcher = gulp.watch(["ts/**", "test/*.ts", paths.pages, paths.images, paths.styles, paths.libs, paths.data], ['bundle']);
     watcher.on('change', function (event) {
         console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
     });
@@ -54,13 +54,13 @@ gulp.task('watch', ["copy-html", "bundle"], function (cb) {
 });
 
 gulp.task('test', function () {
-    return gulp.src('test/*.ts')
+    return gulp.src(['test/header.js', 'test/*.spec.ts'])
         .pipe(mocha({
-            reporter: 'nyan',
+            reporter: 'min',
             require: ['ts-node/register']
         }));
 });
 
-gulp.task("bundle", ["copy-html"], bundle);
+gulp.task("bundle", ["copy-html", "test"], bundle);
 
 gulp.task("default", ["copy-html", "bundle"]);

@@ -69,7 +69,7 @@ export class CoinHoarder {
         console.log("didn't find the coin type in the array with .find");
         for (let i = 0; i < this.coinTypes().length; i += 1) {
             type = this.coinTypes()[i];
-            if (type.country() === data.coinType.country && type.year() === data.coinType.year && type.mint() === data.coinType.mint && type.weight() === data.coinType.weight && type.metal() === data.coinType.metal && type.series() === data.coinType.series) {
+            if(type.isEqual(data.coinType)){
                 return type;
             }
         }
@@ -119,8 +119,8 @@ export class CoinHoarder {
     //     });
 
     //     this.coins().sort(function (a, b) {
-    //         let t1 = a.coinType(),
-    //             t2 = b.coinType(),
+    //         let t1 = a.coinType,
+    //             t2 = b.coinType,
     //             c1 = t1.country(),
     //             c2 = t2.country(),
     //             y1 = Number(t1.year()),
@@ -245,8 +245,8 @@ export class CoinHoarder {
     };
 
     // commitCoin = function () {
-    //     if (this.stagedCoin().coinType().id() !== coinTypeId) {
-    //         coinTypeId = this.stagedCoin().coinType().id();
+    //     if (this.stagedCoin().coinType.id() !== coinTypeId) {
+    //         coinTypeId = this.stagedCoin().coinType.id();
     //     }
     //     if (this.stagedIndex >= 0) {
     //         this.coins()[this.stagedIndex] = this.stagedCoin();
@@ -268,13 +268,13 @@ export class CoinHoarder {
 
     private getWeightSum(theArray:Array<Coin>):number{
         let retVal = 0;
-        theArray.forEach(element => retVal += element.coinType().weight());
+        theArray.forEach(element => retVal += element.coinType.weight());
         return retVal;
     }
 
     private getNumberOfOunces(metal ? : string): number {
         let retVal = 0,
-            filteredCoins = this.coins().filter((e: Coin) => metal? e.active() && e.coinType().metal() == metal: e.active());
+            filteredCoins = this.coins().filter((e: Coin) => metal? e.active() && e.coinType.metal() == metal: e.active());
         retVal = this.getWeightSum(filteredCoins);
         return retVal;
     };

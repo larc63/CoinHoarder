@@ -1,4 +1,4 @@
-
+/// <reference path='../node_modules/@types/knockout/index.d.ts' />
 const CURRENT_GOLD_SPOT = 1233.33;
 const CURRENT_SILVER_SPOT = 15.46;
 const CURRENT_PLATINUM_SPOT = 945.50;
@@ -27,6 +27,18 @@ export class CoinType {
     
     private generateID():string {
         return "ct" + pad(Math.floor(Math.random() * 100000000), 8);
+    }
+    public isEqual(data:any):boolean{
+        let retVal = false;
+        retVal = this.id() === data.id;
+        retVal = retVal && this.country() === data.country;
+        retVal = retVal && this.year() === data.year;
+        retVal = retVal && this.series() === data.series;
+        retVal = retVal && this.weight() === data.weight;
+        retVal = retVal && this.metal() === data.metal;
+        retVal = retVal && this.diameter() === data.diameter;
+        retVal = retVal && this.width() === data.width;
+        return retVal;
     }
 
     // public clone = function () {
@@ -58,7 +70,7 @@ export class CoinType {
 };
 
 export class Coin{
-    coinType: KnockoutObservable<CoinType>;
+    coinType: CoinType; 
     coinTypeId: string;
     premium: KnockoutObservable<number>;
     purchaseDate: KnockoutObservable<string>;
@@ -72,7 +84,7 @@ export class Coin{
     meltPrice: KnockoutComputed<number>;
 
     private generateID():string {
-        return "ct" + pad(Math.floor(Math.random() * 100000000), 8);
+        return "mc" + pad(Math.floor(Math.random() * 100000000), 8);
     }
 
     // this.clone = function () {
@@ -91,8 +103,8 @@ export class Coin{
     constructor(data:any){
         this.id = ko.observable(data.id ? data.id : this.generateID());
         this.active = ko.observable(data.active);
-        this.coinType = ko.observable(data.coinType);
-        this.coinTypeId = this.coinType().id();
+        this.coinType = new CoinType(data.coinType);
+        this.coinTypeId = this.coinType.id();
         this.premium = ko.observable(data.premium);
         this.purchaseDate = ko.observable(data.purchaseDate ? data.purchaseDate : "");
         this.purchasePrice = ko.observable(data.purchasePrice);
@@ -102,8 +114,8 @@ export class Coin{
         this.meltPrice = ko.computed({
             owner: this,
             read:  () => {
-                let metal = this.coinType().metal();
-                let weight = this.coinType().weight();
+                let metal = this.coinType.metal();
+                let weight = this.coinType.weight();
                 if (metal === "silver") {
                     return weight * CURRENT_SILVER_SPOT;
                 }

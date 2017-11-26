@@ -1,0 +1,1 @@
+global.ko = require("../js/knockout-3.3.0");
