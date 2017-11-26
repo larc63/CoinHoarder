@@ -4,7 +4,8 @@ let source = require('vinyl-source-stream');
 let watchify = require("watchify");
 let tsify = require("tsify");
 let gutil = require("gulp-util");
-var es = require('event-stream');
+let es = require('event-stream');
+let mocha = require("gulp-mocha");
 
 let paths = {
     pages: ['pages/*.html'],
@@ -50,6 +51,14 @@ gulp.task('watch', ["copy-html", "bundle"], function (cb) {
         console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
     });
     cb();
+});
+
+gulp.task('test', function () {
+    return gulp.src('test/*.ts')
+        .pipe(mocha({
+            reporter: 'nyan',
+            require: ['ts-node/register']
+        }));
 });
 
 gulp.task("bundle", ["copy-html"], bundle);
