@@ -260,7 +260,7 @@ export class CoinHoarder {
     // };
     // addCoin = function () {
     //     this.stagedCoin();
-    // };
+    // }; 
     // cancelCoinOperation = function () {
     //     this.stagedCoin(undefined);
     //     this.stagedCoinType(undefined);

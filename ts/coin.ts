@@ -6,57 +6,56 @@ const CURRENT_COPPER_SPOT = 2.06;
 
 
 function pad(num: number, size: number) {
-   return ('000000000' + num).substr(-size);
+    return ('000000000' + num).substr(-size);
 }
 
-export class CoinData{
-    coins: Array<Coin>;
-    coinTypes: Array<CoinType>;
+export class CoinData {
+    coins: Array < Coin > ;
+    coinTypes: Array < CoinType > ;
 }
 
 export class CoinType {
-    width: KnockoutObservable<string>;
-    diameter: KnockoutObservable<string>;
-    metal: KnockoutObservable<string>;
-    weight: KnockoutObservable<number>;
-    series: KnockoutObservable<string>;
-    mint: KnockoutObservable<string>;
-    year: KnockoutObservable<string>;
-    country: KnockoutObservable<string>;
-    id: KnockoutObservable<string>;
-    
-    private generateID():string {
+    width: KnockoutObservable < string > ;
+    diameter: KnockoutObservable < string > ;
+    metal: KnockoutObservable < string > ;
+    weight: KnockoutObservable < number > ;
+    series: KnockoutObservable < string > ;
+    mint: KnockoutObservable < string > ;
+    year: KnockoutObservable < string > ;
+    country: KnockoutObservable < string > ;
+    id: KnockoutObservable < string > ;
+
+    private generateID(): string {
         return "ct" + pad(Math.floor(Math.random() * 100000000), 8);
     }
-    public isEqual(data:any):boolean{
-        let retVal = false;
-        retVal = this.id() === data.id;
-        retVal = retVal && this.country() === data.country;
-        retVal = retVal && this.year() === data.year;
-        retVal = retVal && this.series() === data.series;
-        retVal = retVal && this.weight() === data.weight;
-        retVal = retVal && this.metal() === data.metal;
-        retVal = retVal && this.diameter() === data.diameter;
-        retVal = retVal && this.width() === data.width;
+    public isEqual(data: CoinType): boolean {
+        let retVal = true;
+        // retVal = this.id() === data.id;
+        retVal = retVal && this.country() === data.country();
+        retVal = retVal && this.year() === data.year();
+        retVal = retVal && this.series() === data.series();
+        retVal = retVal && this.weight() === data.weight();
+        retVal = retVal && this.metal() === data.metal();
+        retVal = retVal && this.diameter() === data.diameter();
+        retVal = retVal && this.width() === data.width();
         return retVal;
     }
 
-    // public clone = function () {
-    //     var data = {};
-    //     data.id = generateID();
-    //     data.country = this.country();
-    //     data.year = this.year();
-    //     data.mint = this.mint();
-    //     data.series = this.series();
-    //     data.weight = this.weight();
-    //     data.metal = this.metal();
-    //     data.diameter = this.diameter();
-    //     data.width = this.width();
-    //     data.weight = this.weight();
-    //     return new CoinType(data);
-    // }
+    public clone = function () {
+        return new CoinType({
+            "id": this.id(),
+            "country": this.country(),
+            "year": this.year(),
+            "mint": this.mint(),
+            "series": this.series(),
+            "weight": this.weight(),
+            "width": this.width(),
+            "metal": this.metal(),
+            "diameter": this.diameter()
+        });
+    }
 
-    constructor(data:any){
+    constructor(data: any) {
         this.id = ko.observable(data.id ? data.id : this.generateID());
         this.country = ko.observable(data.country ? data.country : "");
         this.year = ko.observable(data.year ? data.year : "");
@@ -69,38 +68,40 @@ export class CoinType {
     }
 };
 
-export class Coin{
-    coinType: CoinType; 
+export class Coin {
+    coinType: CoinType;
     coinTypeId: string;
-    premium: KnockoutObservable<number>;
-    purchaseDate: KnockoutObservable<string>;
-    purchasePrice: KnockoutObservable<number>;
-    saleDate: KnockoutObservable<string>;
-    salePrice: KnockoutObservable<number>;
-    isPermaStack: KnockoutObservable<boolean>;
-    active: KnockoutObservable<boolean>;
-    id: KnockoutObservable<string>;
-    currentPrice: KnockoutComputed<number>;    
-    meltPrice: KnockoutComputed<number>;
+    premium: KnockoutObservable < number > ;
+    purchaseDate: KnockoutObservable < string > ;
+    purchasePrice: KnockoutObservable < number > ;
+    saleDate: KnockoutObservable < string > ;
+    salePrice: KnockoutObservable < number > ;
+    isPermaStack: KnockoutObservable < boolean > ;
+    active: KnockoutObservable < boolean > ;
+    id: KnockoutObservable < string > ;
+    currentPrice: KnockoutComputed < number > ;
+    meltPrice: KnockoutComputed < number > ;
 
-    private generateID():string {
+    private generateID(): string {
         return "mc" + pad(Math.floor(Math.random() * 100000000), 8);
     }
 
-    // this.clone = function () {
-    //     var data = {};
-    //     data.id = generateID();
-    //     data.active = this.active();
-    //     data.coinType = this.coinType();
-    //     data.premium = this.premium();
-    //     data.purchaseDate = this.purchaseDate();
-    //     data.purchasePrice = this.purchasePrice();
-    //     data.saleDate = this.saleDate();
-    //     data.salePrice = this.salePrice();
-    //     data.isPermaStack = this.isPermaStack();
-    //     return new Coin(data);
-    // }
-    constructor(data:any){
+    public clone():Coin {
+        var data = {
+            id: this.generateID(),
+            active: this.active(),
+            coinType: this.coinType,
+            premium: this.premium(),
+            purchaseDate: this.purchaseDate(),
+            purchasePrice: this.purchasePrice(),
+            saleDate: this.saleDate(),
+            salePrice: this.salePrice(),
+            isPermaStack: this.isPermaStack()
+        }
+        return new Coin(data);
+    }
+
+    constructor(data: any) {
         this.id = ko.observable(data.id ? data.id : this.generateID());
         this.active = ko.observable(data.active);
         this.coinType = new CoinType(data.coinType);
@@ -113,7 +114,7 @@ export class Coin{
         this.isPermaStack = ko.observable(data.isPermaStack ? data.isPermaStack : false);
         this.meltPrice = ko.computed({
             owner: this,
-            read:  () => {
+            read: () => {
                 let metal = this.coinType.metal();
                 let weight = this.coinType.weight();
                 if (metal === "silver") {
@@ -134,7 +135,7 @@ export class Coin{
 
         this.currentPrice = ko.computed({
             owner: this,
-            read:  () => {
+            read: () => {
                 return this.meltPrice() * this.premium();
             }
         });
